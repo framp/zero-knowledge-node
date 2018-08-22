@@ -12,5 +12,6 @@
   },
   "devDependencies": {
     "browserify": "^16.2.2"
-  }
+  },
+  "homepage": "http://framp.me/zero-knowledge-node"
 }

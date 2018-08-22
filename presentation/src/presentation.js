@@ -44,6 +44,17 @@ export default class Presentation extends React.Component {
           <br />
           <Image src="https://disruptionhub.com/wp-content/uploads/2018/01/Zero-knowldge-sum.jpg" />
         </Slide>
+
+        <Slide bgColor="#2980b9" textFont="Source Sans Pro" textColor="#ecf0f1">
+          <Heading size={5} caps lineHeight={1.5} textFont="Open Sans" textColor="#ecf0f1">
+            @framp
+          </Heading>
+          <Heading size={5} caps lineHeight={1.5} textFont="Open Sans" textColor="#2c3e50">
+            framp.me
+          </Heading>
+        </Slide>
+
+
         <Slide bgColor="#2980b9" textFont="Source Sans Pro" textColor="#ecf0f1">
           <Heading size={5} caps lineHeight={1.5} textFont="Open Sans" textColor="#2c3e50">
             Zero Knowledge Proof
@@ -84,6 +95,16 @@ export default class Presentation extends React.Component {
             Example: 3 colorable graphs
           </Heading>
           <iframe src="http://web.mit.edu/~ezyang/Public/graph/svg.html" height={600} width={800} style={({ background: '#ecf0f1' })} / >
+        </Slide>
+
+        <Slide bgColor="#2980b9" textFont="Source Sans Pro" textColor="#ecf0f1">
+          <Heading size={5} caps lineHeight={1.5} textFont="Open Sans" textColor="#2c3e50">
+            Non Interactive Zero Knowledge Proof
+          </Heading>
+          <List>
+            <ListItem>By agreeing on a random hash we can compute Victor's questions in advance</ListItem>
+            <ListItem>This removes the need for interaction</ListItem>
+          </List>
         </Slide>
 
         <Slide bgColor="#2980b9" textFont="Source Sans Pro" textColor="#ecf0f1">
@@ -138,11 +159,11 @@ export default class Presentation extends React.Component {
 
         <Slide bgColor="#2980b9" textFont="Source Sans Pro" textColor="#ecf0f1">
           <Heading size={5} caps lineHeight={1.5} textFont="Open Sans" textColor="#2c3e50">
-            Zero Knowledge Proof for NP problems
+            Zero Knowledge Proof for NPC problems
           </Heading>
           <List>
-            <ListItem>Remember the 3 Coloring Graph problem? Yeah, totes NP</ListItem>
-            <ListItem>We can use Zero Knowledge Proof on any NP problem</ListItem>
+            <ListItem>Remember the 3 Coloring Graph problem? Yeah, totes NPC</ListItem>
+            <ListItem>We can use Zero Knowledge Proof on any NPC problem</ListItem>
             <ListItem>... like the ones we use to encrypt things</ListItem>
           </List>
         </Slide>

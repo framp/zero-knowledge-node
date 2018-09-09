@@ -35,6 +35,7 @@ Great articles to go through this and sources for the talk:
 
 An implementation of [this paper](https://paillier.daylightingsociety.org/Paillier_Zero_Knowledge_Proof.pdf).
  - https://github.com/framp/zero-knowledge-node/blob/master/paillier-zero-knowledge/
+ - https://github.com/framp/paillier-in-set-zkp (demoed code packaged as a lib)
 
 We want to be able to encrypt a value and generate a proof that the encrypted value is among a set of valid values.
 

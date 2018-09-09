@@ -26,9 +26,9 @@ const getCoprime = (target) => {
     const result = bigInt(possible)
     if (possible.gt(bigInt(2).pow(1024))) return result
     while(target > 0) {
-			[possible, target] = [target, possible.mod(target)]
+      [possible, target] = [target, possible.mod(target)]
     }
-		if (possible.eq(bigInt(1))) return result
+    if (possible.eq(bigInt(1))) return result
   }
 }
 

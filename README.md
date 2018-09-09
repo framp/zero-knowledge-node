@@ -29,7 +29,7 @@ Great articles to go through this and sources for the talk:
  Moral of the story: Don't roll your own crypto!
  
  Alternatives:
- - 
+ - https://github.com/bitwiseshiftleft/sjcl/pull/273
 
 ## Paillier Zero Knowledge
 

@@ -42,7 +42,7 @@ export default class Presentation extends React.Component {
             Zero Knowledge Proofs in node.js
           </Heading>
           <br />
-          <Image src="/images/wally.jpg" height={500} />
+          <Image src="images/wally.jpg" height={500} />
         </Slide>
 
         <Slide bgColor="#2980b9" textFont="Source Sans Pro" textColor="#ecf0f1">
@@ -72,29 +72,29 @@ export default class Presentation extends React.Component {
           <Heading size={5} caps lineHeight={1.5} textFont="Open Sans" textColor="#2c3e50">
             Example: Where's Wally?
           </Heading>
-          <Image src="/images/wally.jpg" height={500} />
+          <Image src="images/wally.jpg" height={500} />
         </Slide>
 
         <Slide bgColor="#2980b9" textFont="Source Sans Pro" textColor="#ecf0f1">
           <Heading size={5} caps lineHeight={1.5} textFont="Open Sans" textColor="#2c3e50">
             Example: Where's Wally?
           </Heading>
-          <Image src="/images/wally-proof-1.png" />
-          <Image src="/images/wally-proof-2.png" />
+          <Image src="images/wally-proof-1.png" />
+          <Image src="images/wally-proof-2.png" />
         </Slide>
 
         <Slide bgColor="#2980b9" textFont="Source Sans Pro" textColor="#ecf0f1">
           <Heading size={5} caps lineHeight={1.5} textFont="Open Sans" textColor="#2c3e50">
             Example: 3 colorable graphs
           </Heading>
-          <Image src="/images/petersen-graph.svg" />
+          <Image src="images/petersen-graph.svg" />
         </Slide>
 
         <Slide bgColor="#2980b9" textFont="Source Sans Pro" textColor="#ecf0f1">
           <Heading size={5} caps lineHeight={1.5} textFont="Open Sans" textColor="#2c3e50">
             Example: 3 colorable graphs
           </Heading>
-          <iframe src="/graph.html" height={600} width={800} style={({ background: '#ecf0f1' })} / >
+          <iframe src="graph.html" height={600} width={800} style={({ background: '#ecf0f1' })} / >
         </Slide>
 
         <Slide bgColor="#2980b9" textFont="Source Sans Pro" textColor="#ecf0f1">

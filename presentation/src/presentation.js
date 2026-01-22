@@ -42,7 +42,7 @@ export default class Presentation extends React.Component {
             Zero Knowledge Proofs in node.js
           </Heading>
           <br />
-          <Image src="https://disruptionhub.com/wp-content/uploads/2018/01/Zero-knowldge-sum.jpg" />
+          <Image src="/images/wally.jpg" height={500} />
         </Slide>
 
         <Slide bgColor="#2980b9" textFont="Source Sans Pro" textColor="#ecf0f1">
@@ -72,29 +72,29 @@ export default class Presentation extends React.Component {
           <Heading size={5} caps lineHeight={1.5} textFont="Open Sans" textColor="#2c3e50">
             Example: Where's Wally?
           </Heading>
-          <Image src="https://www.dafont.com/forum/attach/orig/2/1/214225.jpg" height={500} />
+          <Image src="/images/wally.jpg" height={500} />
         </Slide>
 
         <Slide bgColor="#2980b9" textFont="Source Sans Pro" textColor="#ecf0f1">
           <Heading size={5} caps lineHeight={1.5} textFont="Open Sans" textColor="#2c3e50">
             Example: Where's Wally?
           </Heading>
-          <Image src="https://cdn-images-1.medium.com/max/1200/1*Wwx1NXSYc9uKVIDPtoiZsw.png" />
-          <Image src="https://cdn-images-1.medium.com/max/2000/1*Wce3t20YER0rJVHLplsYlA.png" />
+          <Image src="/images/wally-proof-1.png" />
+          <Image src="/images/wally-proof-2.png" />
         </Slide>
 
         <Slide bgColor="#2980b9" textFont="Source Sans Pro" textColor="#ecf0f1">
           <Heading size={5} caps lineHeight={1.5} textFont="Open Sans" textColor="#2c3e50">
             Example: 3 colorable graphs
           </Heading>
-          <Image src="https://upload.wikimedia.org/wikipedia/commons/9/90/Petersen_graph_3-coloring.svg" />
+          <Image src="/images/petersen-graph.svg" />
         </Slide>
 
         <Slide bgColor="#2980b9" textFont="Source Sans Pro" textColor="#ecf0f1">
           <Heading size={5} caps lineHeight={1.5} textFont="Open Sans" textColor="#2c3e50">
             Example: 3 colorable graphs
           </Heading>
-          <iframe src="http://web.mit.edu/~ezyang/Public/graph/svg.html" height={600} width={800} style={({ background: '#ecf0f1' })} / >
+          <iframe src="/graph.html" height={600} width={800} style={({ background: '#ecf0f1' })} / >
         </Slide>
 
         <Slide bgColor="#2980b9" textFont="Source Sans Pro" textColor="#ecf0f1">

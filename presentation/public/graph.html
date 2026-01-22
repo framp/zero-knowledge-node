@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interactive zero knowledge 3-colorability demonstration</title>
+  <script language="javascript" type="application/javascript" src="svg.js?1"></script>
+</head>
+<body onload="init()" style="font-family: Verdana;">
+  <table id="controls" style="margin-left: auto; margin-right: auto;width:600px;">
+  <tr><td colspan="3">
+  <h1>Interactive zero knowledge 3-colorability demonstration</h1>
+  </td></tr>
+  <tr><td id="main" colspan="3" style="height:400px">
+    <svg xmlns="http://www.w3.org/2000/svg" style="height:380px;width:600px">
+   <defs>
+    <marker id="Triangle"
+      viewBox="0 0 10 10" refX="0" refY="5"
+      markerUnits="strokeWidth"
+      markerWidth="4" markerHeight="3"
+      orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <text dx="400" dy="200">Pick a graph</text>
+  <path d="M 310 200 L 400 280"
+        fill="none" stroke="black" stroke-width="30"
+        marker-end="url(#Triangle)"  />
+    </svg>
+  </td></tr>
+  <tr><td>
+    <input type="submit" value="Reveal" id="reveal" />
+    <label for="turbo">Turbo:</label> <input type="checkbox" id="turbo" />
+  </td><td style="text-align:center">Confidence: <span id="confidence">0</span>%
+  </td><td style="text-align:right">
+    <input type="submit" value="Graph 1" id="honest" onclick="setup('honest')" />
+    <input type="submit" value="Graph 2" id="tricky" onclick="setup('tricky')" />
+  </td></tr>
+  <tr><td colspan="3" style="padding-top:2em;">
+  <p>This is an interactive demonstration of the <a href="http://en.wikipedia.org/wiki/Zero-knowledge_proof">zero knowledge proof
+  protocol</a> for 3-colorable graphs.  Zero-knowledge proofs permit
+  you to convince a <em>verifier</em> of the truth of a fact (namely,
+  that a graph is three colorable), without revealing the actual three
+  coloring of the graph.</p>
+  <p>This application allows you to play the game as a verifier.  The
+  application (the prover) offers you a graph whose colorings are
+  obscured from you, and you are allowed to pick an edge, which the
+  verifier will reveal the coloring of.  Select a graph and
+  try clicking on some edges.</p>
+
+  <p>You may notice
+  that the colors change between different rounds of the game; although
+  the prover is not allowed to change its mind once it offers you a
+  choice, it's allowed to mix up the colorings between choices.  Indeed, if it didn't,
+  you could reverse engineer the full coloring (making this not a
+  zero-knowledge proof.) You can check that the application is not reneging
+  on its promises by pressing the <em>Reveal</em> button. (Since this
+  tells you what the true coloring is, this is obviously not part
+  of the zero-knowledge protocol!)</p>
+  <p>Once you get tired of clicking edges manually, you can select Turbo
+  to speed things up.  As you play more rounds of the protocol, the
+  probability that the prover is lying (the graph is not 3-colorable)
+  but has managed to get lucky in the edges you picked goes down: this
+  is reflected in the confidence metric.</p>
+  <p><em>Exercise 1:</em> Currently, you can only select adjacent pairs
+  of nodes to check.  Would the proof still be zero knowledge if you
+  could pick arbitrary pairs of nodes to check?</p>
+  <p><em>Exercise 2:</em> The equation currently being used for confidence is <code>1-(1/E)^n</code>, where <code>E</code> is the number of edges in the graph, and <code>n</code> is the number of trials run. Is this the correct equation? Why is there no prior?</p>
+  </td></tr>
+  </table>
+</body>
+</html>

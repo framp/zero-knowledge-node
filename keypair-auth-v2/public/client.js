@@ -1,195 +1,7 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-
-},{}],2:[function(require,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],3:[function(require,module,exports){
-const { 
-  makeKeyPair, makePublicKeyPem, makeAuthSignature, 
-  encryptPrivateKey, decryptPrivateKey 
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+const {
+  makeKeyPair, makePublicKeyPem, makeAuthSignature,
+  encryptPrivateKey, decryptPrivateKey
 } = require('./crypto-utils')
 
 const register = document.getElementById('register')
@@ -197,8 +9,8 @@ const register = document.getElementById('register')
 register.addEventListener('submit', async (event) => {
   event.stopPropagation()
   event.preventDefault()
-  const username = document.querySelector('#register > [name=username]').value
-  const password = document.querySelector('#register > [name=password]').value
+  const username = document.querySelector('#register [name=username]').value
+  const password = document.querySelector('#register [name=password]').value
 
   const { publicKey, privateKey } = await makeKeyPair()
   const publicKeyPem = makePublicKeyPem(publicKey)
@@ -218,7 +30,13 @@ register.addEventListener('submit', async (event) => {
       publicKey: publicKeyPem
     })
   }).then(response => {
-    alert(response.status)
+    if (response.ok) {
+      showNotification('Account Created! 🎉', 'Your keys are stored securely in your browser', 'success')
+    } else if (response.status === 409) {
+      showNotification('Username Taken', 'Please choose a different username', 'error')
+    } else {
+      showNotification('Registration Failed', 'Unable to create account. Please try again', 'error')
+    }
   })
 })
 
@@ -227,13 +45,13 @@ const login = document.getElementById('login')
 login.addEventListener('submit', async (event) => {
   event.stopPropagation()
   event.preventDefault()
-  const username = document.querySelector('#login > [name=username]').value
-  const password = document.querySelector('#login > [name=password]').value
+  const username = document.querySelector('#login [name=username]').value
+  const password = document.querySelector('#login [name=password]').value
 
   const encryptedPrivateKey = localStorage.getItem(username)
   const privateKey = decryptPrivateKey(encryptedPrivateKey, password)
   if (!privateKey) {
-    return alert('Wrong password mate')
+    return showNotification('Decryption Failed', 'Wrong password or corrupted key', 'error')
   }
   const [message, signature] = await makeAuthSignature(privateKey, password)
 
@@ -251,10 +69,19 @@ login.addEventListener('submit', async (event) => {
       signature,
     })
   }).then(response => {
-    alert(response.status)
+    if (response.ok) {
+      showNotification('Welcome Back! 👋', 'Authentication successful', 'success')
+    } else if (response.status === 401) {
+      showNotification('Authentication Failed', 'Invalid signature. Check your password', 'error')
+    } else if (response.status === 404) {
+      showNotification('User Not Found', 'Please register first', 'error')
+    } else {
+      showNotification('Login Failed', 'Unable to authenticate. Please try again', 'error')
+    }
   })
 })
-},{"./crypto-utils":4}],4:[function(require,module,exports){
+
+},{"./crypto-utils":2}],2:[function(require,module,exports){
 const forge = require('node-forge')
 const PKI = forge.pki
 const RANDOM = forge.random
@@ -274,7 +101,9 @@ const generateKeyPair = (opts) => new Promise((resolve, reject) => {
 const makeKeyPair = () => 
   generateKeyPair({ bits: 2048 })
 
-const makePublicKeyPem = (publicKey) => PKI.publicKeyToPem(publicKey)
+  const makePublicKeyPem = (publicKey) => PKI.publicKeyToPem(publicKey)
+
+  const makePrivateKeyPem = (publicKey) => PKI.privateKeyToPem(publicKey)
 
 const getPublicKeyFromPem = (pemPublicKey) => PKI.publicKeyFromPem(pemPublicKey)
 
@@ -289,19 +118,20 @@ const makeAuthSignature = async (privateKey, secret) => {
   const md = MD.sha1.create();
   md.update(message, 'utf8');
   const signature = privateKey.sign(md);
-  return [message, signature]
+  return [message, forge.util.encode64(signature)]
 }
 
 const verifyAuthSignature = async (publicKey, message, signature) => {
   const md = MD.sha1.create();
   md.update(message, 'utf8');
-  const verification = publicKey.verify(md.digest().getBytes(), signature);
+  const verification = publicKey.verify(md.digest().getBytes(), forge.util.decode64(signature));
   return verification
 }
 
 module.exports = {
   makeKeyPair,
   makePublicKeyPem,
+  makePrivateKeyPem,
   getPublicKeyFromPem,
   makeAuthSignature,
   verifyAuthSignature,
@@ -309,7 +139,9 @@ module.exports = {
   decryptPrivateKey,
 }
 
-},{"node-forge":16}],5:[function(require,module,exports){
+},{"node-forge":15}],3:[function(require,module,exports){
+
+},{}],4:[function(require,module,exports){
 /**
  * Advanced Encryption Standard (AES) implementation.
  *
@@ -1402,7 +1234,7 @@ function _createCipher(options) {
   return cipher;
 }
 
-},{"./cipher":9,"./cipherModes":10,"./forge":14,"./util":46}],6:[function(require,module,exports){
+},{"./cipher":8,"./cipherModes":9,"./forge":13,"./util":45}],5:[function(require,module,exports){
 /**
  * A Javascript implementation of AES Cipher Suites for TLS.
  *
@@ -1688,7 +1520,7 @@ function compareMacs(key, mac1, mac2) {
   return mac1 === mac2;
 }
 
-},{"./aes":5,"./forge":14,"./tls":45}],7:[function(require,module,exports){
+},{"./aes":4,"./forge":13,"./tls":44}],6:[function(require,module,exports){
 /**
  * Javascript implementation of Abstract Syntax Notation Number One.
  *
@@ -3098,7 +2930,7 @@ asn1.prettyPrint = function(obj, level, indentation) {
   return rval;
 };
 
-},{"./forge":14,"./oids":25,"./util":46}],8:[function(require,module,exports){
+},{"./forge":13,"./oids":24,"./util":45}],7:[function(require,module,exports){
 (function (Buffer){
 /**
  * Base-N/Base-X encoding/decoding functions.
@@ -3288,7 +3120,7 @@ function _encodeWithByteBuffer(input, alphabet) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":1}],9:[function(require,module,exports){
+},{"buffer":3}],8:[function(require,module,exports){
 /**
  * Cipher base API.
  *
@@ -3520,7 +3352,7 @@ BlockCipher.prototype.finish = function(pad) {
   return true;
 };
 
-},{"./forge":14,"./util":46}],10:[function(require,module,exports){
+},{"./forge":13,"./util":45}],9:[function(require,module,exports){
 /**
  * Supported cipher modes.
  *
@@ -4509,7 +4341,7 @@ function from64To32(num) {
   return [(num / 0x100000000) | 0, num & 0xFFFFFFFF];
 }
 
-},{"./forge":14,"./util":46}],11:[function(require,module,exports){
+},{"./forge":13,"./util":45}],10:[function(require,module,exports){
 /**
  * Debugging support for web applications.
  *
@@ -4589,7 +4421,7 @@ forge.debug.clear = function(cat, name) {
   }
 };
 
-},{"./forge":14}],12:[function(require,module,exports){
+},{"./forge":13}],11:[function(require,module,exports){
 /**
  * DES (Data Encryption Standard) implementation.
  *
@@ -5086,7 +4918,7 @@ function _createCipher(options) {
   return cipher;
 }
 
-},{"./cipher":9,"./cipherModes":10,"./forge":14,"./util":46}],13:[function(require,module,exports){
+},{"./cipher":8,"./cipherModes":9,"./forge":13,"./util":45}],12:[function(require,module,exports){
 (function (Buffer){
 /**
  * JavaScript implementation of Ed25519.
@@ -6086,7 +5918,7 @@ function M(o, a, b) {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./forge":14,"./jsbn":17,"./random":37,"./sha512":42,"./util":46,"buffer":1}],14:[function(require,module,exports){
+},{"./forge":13,"./jsbn":16,"./random":36,"./sha512":41,"./util":45,"buffer":3}],13:[function(require,module,exports){
 /**
  * Node.js module for Forge.
  *
@@ -6101,7 +5933,7 @@ module.exports = {
   }
 };
 
-},{}],15:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /**
  * Hash-based Message Authentication Code implementation. Requires a message
  * digest object that can be obtained, for example, from forge.md.sha1 or
@@ -6249,7 +6081,7 @@ hmac.create = function() {
   return ctx;
 };
 
-},{"./forge":14,"./md":21,"./util":46}],16:[function(require,module,exports){
+},{"./forge":13,"./md":20,"./util":45}],15:[function(require,module,exports){
 /**
  * Node.js module for Forge.
  *
@@ -6286,7 +6118,7 @@ require('./task');
 require('./tls');
 require('./util');
 
-},{"./aes":5,"./aesCipherSuites":6,"./asn1":7,"./cipher":9,"./debug":11,"./des":12,"./ed25519":13,"./forge":14,"./hmac":15,"./kem":18,"./log":19,"./md.all":20,"./mgf1":24,"./pbkdf2":27,"./pem":28,"./pkcs1":29,"./pkcs12":30,"./pkcs7":31,"./pki":33,"./prime":34,"./prng":35,"./pss":36,"./random":37,"./rc2":38,"./ssh":43,"./task":44,"./tls":45,"./util":46}],17:[function(require,module,exports){
+},{"./aes":4,"./aesCipherSuites":5,"./asn1":6,"./cipher":8,"./debug":10,"./des":11,"./ed25519":12,"./forge":13,"./hmac":14,"./kem":17,"./log":18,"./md.all":19,"./mgf1":23,"./pbkdf2":26,"./pem":27,"./pkcs1":28,"./pkcs12":29,"./pkcs7":30,"./pki":32,"./prime":33,"./prng":34,"./pss":35,"./random":36,"./rc2":37,"./ssh":42,"./task":43,"./tls":44,"./util":45}],16:[function(require,module,exports){
 // Copyright (c) 2005  Tom Wu
 // All Rights Reserved.
 // See "LICENSE" for details.
@@ -7552,7 +7384,7 @@ BigInteger.prototype.isProbablePrime = bnIsProbablePrime;
 //long longValue()
 //static BigInteger valueOf(long val)
 
-},{"./forge":14}],18:[function(require,module,exports){
+},{"./forge":13}],17:[function(require,module,exports){
 /**
  * Javascript implementation of RSA-KEM.
  *
@@ -7722,7 +7554,7 @@ function _createKDF(kdf, md, counterStart, digestLength) {
   };
 }
 
-},{"./forge":14,"./jsbn":17,"./random":37,"./util":46}],19:[function(require,module,exports){
+},{"./forge":13,"./jsbn":16,"./random":36,"./util":45}],18:[function(require,module,exports){
 /**
  * Cross-browser support for logging in a web application.
  *
@@ -8041,7 +7873,7 @@ if(sConsoleLogger !== null) {
 // provide public access to console logger
 forge.log.consoleLogger = sConsoleLogger;
 
-},{"./forge":14,"./util":46}],20:[function(require,module,exports){
+},{"./forge":13,"./util":45}],19:[function(require,module,exports){
 /**
  * Node.js module for all known Forge message digests.
  *
@@ -8056,7 +7888,7 @@ require('./sha1');
 require('./sha256');
 require('./sha512');
 
-},{"./md":21,"./md5":22,"./sha1":40,"./sha256":41,"./sha512":42}],21:[function(require,module,exports){
+},{"./md":20,"./md5":21,"./sha1":39,"./sha256":40,"./sha512":41}],20:[function(require,module,exports){
 /**
  * Node.js module for Forge message digests.
  *
@@ -8069,7 +7901,7 @@ var forge = require('./forge');
 module.exports = forge.md = forge.md || {};
 forge.md.algorithms = forge.md.algorithms || {};
 
-},{"./forge":14}],22:[function(require,module,exports){
+},{"./forge":13}],21:[function(require,module,exports){
 /**
  * Message Digest Algorithm 5 with 128-bit digest (MD5) implementation.
  *
@@ -8360,7 +8192,7 @@ function _update(s, w, bytes) {
   }
 }
 
-},{"./forge":14,"./md":21,"./util":46}],23:[function(require,module,exports){
+},{"./forge":13,"./md":20,"./util":45}],22:[function(require,module,exports){
 /**
  * Node.js module for Forge mask generation functions.
  *
@@ -8374,7 +8206,7 @@ require('./mgf1');
 module.exports = forge.mgf = forge.mgf || {};
 forge.mgf.mgf1 = forge.mgf1;
 
-},{"./forge":14,"./mgf1":24}],24:[function(require,module,exports){
+},{"./forge":13,"./mgf1":23}],23:[function(require,module,exports){
 /**
  * Javascript implementation of mask generation function MGF1.
  *
@@ -8433,7 +8265,7 @@ mgf1.create = function(md) {
   return mgf;
 };
 
-},{"./forge":14,"./util":46}],25:[function(require,module,exports){
+},{"./forge":13,"./util":45}],24:[function(require,module,exports){
 /**
  * Object IDs for ASN.1.
  *
@@ -8596,7 +8428,7 @@ _IN('1.3.6.1.5.5.7.3.3', 'codeSigning');
 _IN('1.3.6.1.5.5.7.3.4', 'emailProtection');
 _IN('1.3.6.1.5.5.7.3.8', 'timeStamping');
 
-},{"./forge":14}],26:[function(require,module,exports){
+},{"./forge":13}],25:[function(require,module,exports){
 /**
  * Password-based encryption functions.
  *
@@ -9621,7 +9453,7 @@ function createPbkdf2Params(salt, countBytes, dkLen, prfAlgorithm) {
   return params;
 }
 
-},{"./aes":5,"./asn1":7,"./des":12,"./forge":14,"./md":21,"./oids":25,"./pbkdf2":27,"./pem":28,"./random":37,"./rc2":38,"./rsa":39,"./util":46}],27:[function(require,module,exports){
+},{"./aes":4,"./asn1":6,"./des":11,"./forge":13,"./md":20,"./oids":24,"./pbkdf2":26,"./pem":27,"./random":36,"./rc2":37,"./rsa":38,"./util":45}],26:[function(require,module,exports){
 (function (Buffer){
 /**
  * Password-Based Key-Derivation Function #2 implementation.
@@ -9836,7 +9668,7 @@ module.exports = forge.pbkdf2 = pkcs5.pbkdf2 = function(
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./forge":14,"./hmac":15,"./md":21,"./util":46,"buffer":1,"crypto":1}],28:[function(require,module,exports){
+},{"./forge":13,"./hmac":14,"./md":20,"./util":45,"buffer":3,"crypto":3}],27:[function(require,module,exports){
 /**
  * Javascript implementation of basic PEM (Privacy Enhanced Mail) algorithms.
  *
@@ -10068,7 +9900,7 @@ function ltrim(str) {
   return str.replace(/^\s+/, '');
 }
 
-},{"./forge":14,"./util":46}],29:[function(require,module,exports){
+},{"./forge":13,"./util":45}],28:[function(require,module,exports){
 /**
  * Partial implementation of PKCS#1 v2.2: RSA-OEAP
  *
@@ -10346,7 +10178,7 @@ function rsa_mgf1(seed, maskLength, hash) {
   return t.substring(0, maskLength);
 }
 
-},{"./forge":14,"./random":37,"./sha1":40,"./util":46}],30:[function(require,module,exports){
+},{"./forge":13,"./random":36,"./sha1":39,"./util":45}],29:[function(require,module,exports){
 /**
  * Javascript implementation of PKCS#12.
  *
@@ -11422,7 +11254,7 @@ p12.toPkcs12Asn1 = function(key, cert, password, options) {
  */
 p12.generateKey = forge.pbe.generatePkcs12Key;
 
-},{"./asn1":7,"./forge":14,"./hmac":15,"./oids":25,"./pbe":26,"./pkcs7asn1":32,"./random":37,"./rsa":39,"./sha1":40,"./util":46,"./x509":47}],31:[function(require,module,exports){
+},{"./asn1":6,"./forge":13,"./hmac":14,"./oids":24,"./pbe":25,"./pkcs7asn1":31,"./random":36,"./rsa":38,"./sha1":39,"./util":45,"./x509":46}],30:[function(require,module,exports){
 /**
  * Javascript implementation of PKCS#7 v1.5.
  *
@@ -12681,7 +12513,7 @@ function _decryptContent(msg) {
   }
 }
 
-},{"./aes":5,"./asn1":7,"./des":12,"./forge":14,"./oids":25,"./pem":28,"./pkcs7asn1":32,"./random":37,"./util":46,"./x509":47}],32:[function(require,module,exports){
+},{"./aes":4,"./asn1":6,"./des":11,"./forge":13,"./oids":24,"./pem":27,"./pkcs7asn1":31,"./random":36,"./util":45,"./x509":46}],31:[function(require,module,exports){
 /**
  * Javascript implementation of ASN.1 validators for PKCS#7 v1.5.
  *
@@ -13092,7 +12924,7 @@ p7v.recipientInfoValidator = {
   }]
 };
 
-},{"./asn1":7,"./forge":14,"./util":46}],33:[function(require,module,exports){
+},{"./asn1":6,"./forge":13,"./util":45}],32:[function(require,module,exports){
 /**
  * Javascript implementation of a basic Public Key Infrastructure, including
  * support for RSA public and private keys.
@@ -13196,7 +13028,7 @@ pki.privateKeyInfoToPem = function(pki, maxline) {
   return forge.pem.encode(msg, {maxline: maxline});
 };
 
-},{"./asn1":7,"./forge":14,"./oids":25,"./pbe":26,"./pbkdf2":27,"./pem":28,"./pkcs12":30,"./pss":36,"./rsa":39,"./util":46,"./x509":47}],34:[function(require,module,exports){
+},{"./asn1":6,"./forge":13,"./oids":24,"./pbe":25,"./pbkdf2":26,"./pem":27,"./pkcs12":29,"./pss":35,"./rsa":38,"./util":45,"./x509":46}],33:[function(require,module,exports){
 /**
  * Prime number generation API.
  *
@@ -13495,7 +13327,7 @@ function getMillerRabinTests(bits) {
 
 })();
 
-},{"./forge":14,"./jsbn":17,"./random":37,"./util":46}],35:[function(require,module,exports){
+},{"./forge":13,"./jsbn":16,"./random":36,"./util":45}],34:[function(require,module,exports){
 (function (process){
 /**
  * A javascript implementation of a cryptographically-secure
@@ -13919,7 +13751,7 @@ prng.create = function(plugin) {
 };
 
 }).call(this,require('_process'))
-},{"./forge":14,"./util":46,"_process":2,"crypto":1}],36:[function(require,module,exports){
+},{"./forge":13,"./util":45,"_process":47,"crypto":3}],35:[function(require,module,exports){
 /**
  * Javascript implementation of PKCS#1 PSS signature padding.
  *
@@ -14162,7 +13994,7 @@ pss.create = function(options) {
   return pssobj;
 };
 
-},{"./forge":14,"./random":37,"./util":46}],37:[function(require,module,exports){
+},{"./forge":13,"./random":36,"./util":45}],36:[function(require,module,exports){
 /**
  * An API for getting cryptographically-secure random bytes. The bytes are
  * generated using the Fortuna algorithm devised by Bruce Schneier and
@@ -14355,7 +14187,7 @@ module.exports = forge.random;
 
 })();
 
-},{"./aes":5,"./forge":14,"./prng":35,"./sha256":41,"./util":46}],38:[function(require,module,exports){
+},{"./aes":4,"./forge":13,"./prng":34,"./sha256":40,"./util":45}],37:[function(require,module,exports){
 /**
  * RC2 implementation.
  *
@@ -14767,7 +14599,7 @@ forge.rc2.createDecryptionCipher = function(key, bits) {
   return createCipher(key, bits, false);
 };
 
-},{"./forge":14,"./util":46}],39:[function(require,module,exports){
+},{"./forge":13,"./util":45}],38:[function(require,module,exports){
 /**
  * Javascript implementation of basic RSA algorithms.
  *
@@ -16565,7 +16397,7 @@ function _base64ToBigInt(b64) {
   return new BigInteger(forge.util.bytesToHex(forge.util.decode64(b64)), 16);
 }
 
-},{"./asn1":7,"./forge":14,"./jsbn":17,"./oids":25,"./pkcs1":29,"./prime":34,"./random":37,"./util":46}],40:[function(require,module,exports){
+},{"./asn1":6,"./forge":13,"./jsbn":16,"./oids":24,"./pkcs1":28,"./prime":33,"./random":36,"./util":45}],39:[function(require,module,exports){
 /**
  * Secure Hash Algorithm with 160-bit digest (SHA-1) implementation.
  *
@@ -16886,7 +16718,7 @@ function _update(s, w, bytes) {
   }
 }
 
-},{"./forge":14,"./md":21,"./util":46}],41:[function(require,module,exports){
+},{"./forge":13,"./md":20,"./util":45}],40:[function(require,module,exports){
 /**
  * Secure Hash Algorithm with 256-bit digest (SHA-256) implementation.
  *
@@ -17215,7 +17047,7 @@ function _update(s, w, bytes) {
   }
 }
 
-},{"./forge":14,"./md":21,"./util":46}],42:[function(require,module,exports){
+},{"./forge":13,"./md":20,"./util":45}],41:[function(require,module,exports){
 /**
  * Secure Hash Algorithm with a 1024-bit block size implementation.
  *
@@ -17778,7 +17610,7 @@ function _update(s, w, bytes) {
   }
 }
 
-},{"./forge":14,"./md":21,"./util":46}],43:[function(require,module,exports){
+},{"./forge":13,"./md":20,"./util":45}],42:[function(require,module,exports){
 /**
  * Functions to output keys in SSH-friendly formats.
  *
@@ -18016,7 +17848,7 @@ function _sha1() {
   return sha.digest();
 }
 
-},{"./aes":5,"./forge":14,"./hmac":15,"./md5":22,"./sha1":40,"./util":46}],44:[function(require,module,exports){
+},{"./aes":4,"./forge":13,"./hmac":14,"./md5":21,"./sha1":39,"./util":45}],43:[function(require,module,exports){
 /**
  * Support for concurrent task management and synchronization in web
  * applications.
@@ -18743,7 +18575,7 @@ forge.task.createCondition = function() {
   return cond;
 };
 
-},{"./debug":11,"./forge":14,"./log":19,"./util":46}],45:[function(require,module,exports){
+},{"./debug":10,"./forge":13,"./log":18,"./util":45}],44:[function(require,module,exports){
 /**
  * A Javascript implementation of Transport Layer Security (TLS).
  *
@@ -23014,8 +22846,8 @@ forge.tls.createSessionCache = tls.createSessionCache;
  */
 forge.tls.createConnection = tls.createConnection;
 
-},{"./asn1":7,"./forge":14,"./hmac":15,"./md5":22,"./pem":28,"./pki":33,"./random":37,"./sha1":40,"./util":46}],46:[function(require,module,exports){
-(function (process,Buffer){
+},{"./asn1":6,"./forge":13,"./hmac":14,"./md5":21,"./pem":27,"./pki":32,"./random":36,"./sha1":39,"./util":45}],45:[function(require,module,exports){
+(function (process,Buffer,setImmediate){
 /**
  * Utility functions for web applications.
  *
@@ -25997,8 +25829,8 @@ util.estimateCores = function(options, callback) {
   }
 };
 
-}).call(this,require('_process'),require("buffer").Buffer)
-},{"./baseN":8,"./forge":14,"_process":2,"buffer":1}],47:[function(require,module,exports){
+}).call(this,require('_process'),require("buffer").Buffer,require("timers").setImmediate)
+},{"./baseN":7,"./forge":13,"_process":47,"buffer":3,"timers":48}],46:[function(require,module,exports){
 /**
  * Javascript implementation of X.509 and related components (such as
  * Certification Signing Requests) of a Public Key Infrastructure.
@@ -29271,4 +29103,269 @@ pki.verifyCertificateChain = function(caStore, chain, verify) {
   return true;
 };
 
-},{"./aes":5,"./asn1":7,"./des":12,"./forge":14,"./md":21,"./mgf":23,"./oids":25,"./pem":28,"./pss":36,"./rsa":39,"./util":46}]},{},[3]);
+},{"./aes":4,"./asn1":6,"./des":11,"./forge":13,"./md":20,"./mgf":22,"./oids":24,"./pem":27,"./pss":35,"./rsa":38,"./util":45}],47:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],48:[function(require,module,exports){
+(function (setImmediate,clearImmediate){
+var nextTick = require('process/browser.js').nextTick;
+var apply = Function.prototype.apply;
+var slice = Array.prototype.slice;
+var immediateIds = {};
+var nextImmediateId = 0;
+
+// DOM APIs, for completeness
+
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) { timeout.close(); };
+
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
+}
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(window, this._id);
+};
+
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
+
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
+
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
+
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
+
+// That's not how node.js implements it but the exposed api is the same.
+exports.setImmediate = typeof setImmediate === "function" ? setImmediate : function(fn) {
+  var id = nextImmediateId++;
+  var args = arguments.length < 2 ? false : slice.call(arguments, 1);
+
+  immediateIds[id] = true;
+
+  nextTick(function onNextTick() {
+    if (immediateIds[id]) {
+      // fn.call() is faster so we optimize for the common use-case
+      // @see http://jsperf.com/call-apply-segu
+      if (args) {
+        fn.apply(null, args);
+      } else {
+        fn.call(null);
+      }
+      // Prevent ids from leaking
+      exports.clearImmediate(id);
+    }
+  });
+
+  return id;
+};
+
+exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
+  delete immediateIds[id];
+};
+}).call(this,require("timers").setImmediate,require("timers").clearImmediate)
+},{"process/browser.js":47,"timers":48}]},{},[1]);

@@ -1,6 +1,6 @@
-const { 
-  makeKeyPair, makePublicKeyPem, makeAuthSignature, 
-  encryptPrivateKey, decryptPrivateKey 
+const {
+  makeKeyPair, makePublicKeyPem, makeAuthSignature,
+  encryptPrivateKey, decryptPrivateKey
 } = require('./crypto-utils')
 
 const register = document.getElementById('register')
@@ -8,8 +8,8 @@ const register = document.getElementById('register')
 register.addEventListener('submit', async (event) => {
   event.stopPropagation()
   event.preventDefault()
-  const username = document.querySelector('#register > [name=username]').value
-  const password = document.querySelector('#register > [name=password]').value
+  const username = document.querySelector('#register [name=username]').value
+  const password = document.querySelector('#register [name=password]').value
 
   const { publicKey, privateKey } = await makeKeyPair()
   const publicKeyPem = makePublicKeyPem(publicKey)
@@ -29,7 +29,13 @@ register.addEventListener('submit', async (event) => {
       publicKey: publicKeyPem
     })
   }).then(response => {
-    alert(response.status)
+    if (response.ok) {
+      showNotification('Account Created! 🎉', 'Your keys are stored securely in your browser', 'success')
+    } else if (response.status === 409) {
+      showNotification('Username Taken', 'Please choose a different username', 'error')
+    } else {
+      showNotification('Registration Failed', 'Unable to create account. Please try again', 'error')
+    }
   })
 })
 
@@ -38,13 +44,13 @@ const login = document.getElementById('login')
 login.addEventListener('submit', async (event) => {
   event.stopPropagation()
   event.preventDefault()
-  const username = document.querySelector('#login > [name=username]').value
-  const password = document.querySelector('#login > [name=password]').value
+  const username = document.querySelector('#login [name=username]').value
+  const password = document.querySelector('#login [name=password]').value
 
   const encryptedPrivateKey = localStorage.getItem(username)
   const privateKey = decryptPrivateKey(encryptedPrivateKey, password)
   if (!privateKey) {
-    return alert('Wrong password mate')
+    return showNotification('Decryption Failed', 'Wrong password or corrupted key', 'error')
   }
   const [message, signature] = await makeAuthSignature(privateKey, password)
 
@@ -62,6 +68,14 @@ login.addEventListener('submit', async (event) => {
       signature,
     })
   }).then(response => {
-    alert(response.status)
+    if (response.ok) {
+      showNotification('Welcome Back! 👋', 'Authentication successful', 'success')
+    } else if (response.status === 401) {
+      showNotification('Authentication Failed', 'Invalid signature. Check your password', 'error')
+    } else if (response.status === 404) {
+      showNotification('User Not Found', 'Please register first', 'error')
+    } else {
+      showNotification('Login Failed', 'Unable to authenticate. Please try again', 'error')
+    }
   })
 })

@@ -5,7 +5,7 @@
   "dependencies": {
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
-    "spectacle-scripts": "2.0.0"
+    "spectacle-scripts": "2.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -13,5 +13,14 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "homepage": "http://framp.me/zero-knowledge-node"
+  "homepage": "http://framp.me/zero-knowledge-node",
+  "devDependencies": {
+    "react-scripts": "^2.1.8"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

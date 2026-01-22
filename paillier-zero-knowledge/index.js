@@ -33,7 +33,7 @@ const getCoprime = (target) => {
 }
 
 // encryptWithProof :: Paillier.PublickKEy -> Message, -> [Message] -> Bits
-// Generate a message encryption and a Zero Knowledge proof that the message 
+// Generate a message encryption and a Zero Knowledge proof that the message
 // is among a set of valid messages
 const encryptWithProof = (publicKey, message, validMessages, bits=512) => {
   const as = []

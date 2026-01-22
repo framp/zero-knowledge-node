@@ -34,13 +34,13 @@ const makeAuthSignature = async (privateKey, secret) => {
   const md = MD.sha1.create();
   md.update(message, 'utf8');
   const signature = privateKey.sign(md);
-  return [message, signature]
+  return [message, forge.util.encode64(signature)]
 }
 
 const verifyAuthSignature = async (publicKey, message, signature) => {
   const md = MD.sha1.create();
   md.update(message, 'utf8');
-  const verification = publicKey.verify(md.digest().getBytes(), signature);
+  const verification = publicKey.verify(md.digest().getBytes(), forge.util.decode64(signature));
   return verification
 }
 

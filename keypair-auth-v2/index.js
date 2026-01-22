@@ -5,22 +5,7 @@ const app = express()
 app.use(express.static('public'))
 app.use(express.json())
 
-app.get('/', (req, res) => res.send(`
-<h1>Register</h1>
-<form id='register' method='post' action='/register'>
-  <input name=username />
-  <input name=password type=password />
-  <input type=submit />
-</form>
-<br />
-<h1>Login</h1>
-<form id='login' method='post' action='/login'>
-  <input name=username />
-  <input name=password type=password />
-  <input type=submit />
-</form>
-<script src="/client.js"></script>
-`))
+
 
 const users = {}
 
@@ -38,7 +23,7 @@ app.post('/register', (req, res) => {
 app.post('/login', async (req, res) => {
   console.log('DEBUG: Received', req.body)
   const publicKey = users[req.body.username]
-  if (!publicKey){ 
+  if (!publicKey){
     return res.sendStatus(404)
   }
   try {
@@ -49,4 +34,4 @@ app.post('/login', async (req, res) => {
   }
   res.sendStatus(200)
 })
-app.listen(1337)
+app.listen(13337)

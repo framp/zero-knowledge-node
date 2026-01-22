@@ -1,6 +1,13 @@
 {
-  "main.css": "static/css/main.653da357.css",
-  "main.css.map": "static/css/main.653da357.css.map",
-  "main.js": "static/js/main.dfc6c12b.js",
-  "main.js.map": "static/js/main.dfc6c12b.js.map"
+  "main.js": "/zero-knowledge-node/static/js/main.0640e7f2.chunk.js",
+  "main.js.map": "/zero-knowledge-node/static/js/main.0640e7f2.chunk.js.map",
+  "runtime~main.js": "/zero-knowledge-node/static/js/runtime~main.9fab8f8d.js",
+  "runtime~main.js.map": "/zero-knowledge-node/static/js/runtime~main.9fab8f8d.js.map",
+  "static/css/2.08bb8cda.chunk.css": "/zero-knowledge-node/static/css/2.08bb8cda.chunk.css",
+  "static/js/2.f4c49868.chunk.js": "/zero-knowledge-node/static/js/2.f4c49868.chunk.js",
+  "static/js/2.f4c49868.chunk.js.map": "/zero-knowledge-node/static/js/2.f4c49868.chunk.js.map",
+  "index.html": "/zero-knowledge-node/index.html",
+  "precache-manifest.c76ffa0f092cd6eb6d1ab928fe26bea7.js": "/zero-knowledge-node/precache-manifest.c76ffa0f092cd6eb6d1ab928fe26bea7.js",
+  "service-worker.js": "/zero-knowledge-node/service-worker.js",
+  "static/css/2.08bb8cda.chunk.css.map": "/zero-knowledge-node/static/css/2.08bb8cda.chunk.css.map"
 }
